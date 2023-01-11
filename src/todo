@@ -1,2 +1,7 @@
-1. setup form and test api
+1. setup form and test api w/updating sidebar
 2. create reusable input components w/ state
+
+-need to add reusable component to input and get calculation of total income & liabilities working/sending to api
+*add dashes inbetween sidebar values
+*add per year option to input-component
+*add additional income feature to input-component
