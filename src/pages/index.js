@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react"
 import styled from '@emotion/styled';
 import { useForm } from "react-hook-form"
 import InputComponent from "../components/input-component";
+import InputComponent2 from "../components/input-component2"
+import SingleInputComponent from "../components/single-input-component"
 
 const Wrapper = styled.div`
 display: flex;
@@ -9,26 +11,16 @@ justify-content: center;
 flex-direction: row;
 max-width: 900px;
 width: 100%;
-margin: auto;
-form {
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    
-    input,button {
-        width: 100%;
-        margin: 10px;
-    }
-}
-div {
-    width: 50%;
-    margin: 40px;
-    padding: 20px;
-}
+margin: 50px auto;
 .sidebar {
-    background-color: lightGray;
+    position: fixed;
+    margin: 115px 0 0 800px;
+    background-color: #e9e9ed;
     border-radius: 5px;
     width: 230px;
+    max-height: 210px;
+    padding: 20px;
+    
     p {
         font-size: 17px;
     }
@@ -50,12 +42,57 @@ button {
 
 export default function Index(){
     const [serverState, setServerState] = useState({formSent: false});
-    const [totalIncome, setTotalIncome] = useState(0);
+    
+
+    const [totalLiabilities, setTotalLiabilities] = useState(0);
     const [deposit, setDeposit] = useState(0);
     const [canBorrow, setCanBorrow] = useState(0);
     const [propertyValue, setPropertyValue] = useState(0);
 
-    
+    const [baseIncome, setBaseIncome] = useState(0);
+    const [additionalIncome, setAdditionalIncome] = useState(0);
+
+    const [cardLiabilities, setCardLiabilities] = useState(0);
+    const [loanLiabilities, setLoanLiabilities] = useState(0)
+
+    //would need to create lists for state creation
+
+
+    const handleBaseIncomeChange = input => {
+        setBaseIncome(input);
+        console.log("Base Income: ",input);
+        
+    }
+
+    const handleDataChange1 = input => {
+        console.log("Data1: ",input)
+        setAdditionalIncome(input);
+    }
+
+    const handleDataChange2 = input => {
+        console.log("Data2: ",input)
+        setCardLiabilities(input);
+    }
+
+    const handleDataChange3 = input => {
+        console.log("Data3: ",input)
+        setLoanLiabilities(input);
+    }
+
+    useEffect(() => {
+        console.log("TotalIncome: ", baseIncome + additionalIncome)
+    },[baseIncome, additionalIncome])
+
+    useEffect(() => {
+        console.log(cardLiabilities,loanLiabilities)
+        console.log("TotalLiabilities: ", cardLiabilities + loanLiabilities)
+    },[cardLiabilities, loanLiabilities])
+
+
+    const handleDepositChange = input => {
+            setDeposit(input);
+            console.log("Deposit: ",input);
+    }
 
     const {
         register,
@@ -64,14 +101,12 @@ export default function Index(){
       } = useForm()
 
     async function onSubmit(data){
-        setDeposit(data.Deposit)
-        setTotalIncome(data.TotalIncome)
         fetch(`/api/test`, {
           method: `POST`,
           body: JSON.stringify({
-            total_income: data.TotalIncome,
-            total_liabilities: data.TotalLiabilities,
-            deposit: data.Deposit,
+            total_income: baseIncome+additionalIncome,
+            total_liabilities: cardLiabilities+loanLiabilities,
+            deposit: deposit,
         }),
           headers: {
             "content-type": `application/json`,
@@ -80,7 +115,6 @@ export default function Index(){
           .then(res => res.json())
           .then(body => {
             console.log(`response from API:`, body);
-            
             setCanBorrow(body.result.borrowing);
             setPropertyValue(body.result.property);
           })
@@ -98,57 +132,53 @@ export default function Index(){
       })
     return (
         <Wrapper>
-            <form 
+                <form
                 onSubmit={handleSubmit(onSubmit)}
                 id="main-form"
                 >
-                    <label htmlFor="total_income">
-                            <p>Income:</p>
-                            <input 
-                                type="text" 
-                                name="total_income" 
-                                required  
-                                {...register("TotalIncome", { required: true, maxLength: 100 })} 
-                            />
-                    </label>
-                    <label htmlFor="total_liabilities">
-                        <p>Total Liabilities:</p>
-                        <input 
-                            type="text" 
-                            name="total_liabilities" 
-                            required
-                            {...register("TotalLiabilities", { required: true, maxLength: 100})}
-                        />
-                    </label>
-                    <label htmlFor="deposit">
-                            <p>Deposit:</p>
-                            <input 
-                                type="text" 
-                                name="deposit" 
-                                required  
-                                {...register("Deposit", { required: true, maxLength: 100 })} 
-                            />
-                    </label>
+                    <h1>Calculator</h1>
+                    <InputComponent 
+                    handleIncomeChange={handleBaseIncomeChange}
+                    Q1="How many of you are buying the property?" 
+                    Q1O1="Just me" Q1O2="I'm buying with someone else" 
+                    Q2="What's your base salary/wages?(before tax)?"
+                    Q3="What's the second applicants base salary/wages?"
+                    />
+                    <InputComponent2
+                    handleDataChange={handleDataChange1}
+                    Q1="Do you have another source of income?" 
+                    Q1O1="Yes" Q1O2="No" 
+                    Q2="Other income"
+                    />
+                    <InputComponent2
+                    handleDataChange={handleDataChange2}
+                    Q1="Do you have any loans?" 
+                    Q1O1="Yes" Q1O2="No" 
+                    Q2="loan"
+                    />
+                    <InputComponent2
+                    handleDataChange={handleDataChange3}
+                    Q1="Do you have any credit cards?" 
+                    Q1O1="Yes" Q1O2="No" 
+                    Q2="credit card"
+                    />
+                    <SingleInputComponent
+                    updateDeposit={handleDepositChange}
+                    Q1="How much deposit do you have?"
+                    />
                     <button
                         type="submit"
                         data-sitekey="site_key"
                         data-callback='onSubmit'
                         data-action='submit'
                     ><b>Send</b></button>
-                    
-                </form>
+                 </form> 
                 <div className="sidebar">
                     <p>Here's what you can borrow: <b>${canBorrow}</b></p>
                     <p className="subp">With your deposit of ${deposit} you could afford a property upto ${propertyValue}</p>
-                    <p>Total Income <br/>${totalIncome}</p>
+                    <p>Total Income <br/>${baseIncome+additionalIncome}</p>
                 </div>
-            {/* <form>
-                <InputComponent 
-                Q1="How many of you are buying the property?" 
-                Q1O1="Just me" Q1O2="I'm buying with someone else" 
-                Q2="What's your base salary/wages?(before tax)?"
-                Q3="What's the second applicants base salary/wages?"/>
-            </form>  */}
+            
         </Wrapper>
     )
 }

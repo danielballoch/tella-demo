@@ -2,6 +2,13 @@
 2. create reusable input components w/ state
 
 -need to add reusable component to input and get calculation of total income & liabilities working/sending to api
-*add dashes inbetween sidebar values
+-get main additions working then add on "add x" feature, just need total value back from each component 
+//map components? state controlling how many components and map based on that.
+*add dashes inbetween sidebar values 
 *add per year option to input-component
 *add additional income feature to input-component
+*hide sidebar values if no data
+
+//keep getting incomeUpdate is not a function which doesn't make a whole lot of sense... becaues it is. Should probably sleep for a couple hours and come back to this. It's probably something dumb. Sleep on it you'll figure it out.
+
+//maybe it's because i'm using the component twice?? so it's there on the first one but not the second
