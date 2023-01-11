@@ -7,14 +7,17 @@ import SingleInputComponent from "../components/single-input-component"
 
 const Wrapper = styled.div`
 display: flex;
-justify-content: center;
+justify-content: left;
 flex-direction: row;
 max-width: 900px;
 width: 100%;
 margin: 50px auto;
+form {
+    margin-left: 60px;
+}
 .sidebar {
     position: fixed;
-    margin: 115px 0 0 800px;
+    margin: 115px 0 0 580px;
     background-color: #e9e9ed;
     border-radius: 5px;
     width: 230px;
