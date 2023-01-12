@@ -151,7 +151,7 @@ export default function Index(){
                     handleDataChange={handleDataChange1}
                     Q1="Do you have another source of income?" 
                     Q1O1="Yes" Q1O2="No" 
-                    Q2="Other income"
+                    Q2="Additional Income"
                     />
                     <InputComponent2
                     handleDataChange={handleDataChange2}

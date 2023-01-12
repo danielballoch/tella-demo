@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from "react"
+import React,{ useState, useEffect } from "react"
 import styled from '@emotion/styled';
 
 const InputDiv = styled.div`
@@ -35,21 +35,44 @@ button {
     color: white;
 }
 `
+function Star({Q2, additionalComponents, handleChange, setAdditionalComponents, i}){
+    return(
+        <div key={"component"+i}>
+            <label for="Q2">{Q2} #{i+2}</label><br/>
+            <input onChange={event => {handleChange([i,event.target.value]);console.log(event.target.value)}} type="text" id="Q2" name="Q2"/><br/>
+            <button type="button" onClick={()=> {setAdditionalComponents(additionalComponents-1);Array(additionalComponents).pop();}}>close</button>
+        </div>
+    )
+}
 
 export default function InputComponent({Q1, Q1O1, Q1O2, Q2,handleDataChange}){
     const [activeInput, setActiveInput] = useState(false);
     const [total, setTotal] = useState(0);
     const [value1, setValue1] = useState(0);
+    const [additionalComponents, setAdditionalComponents] = useState(0);
+    const [additionalValue, setAdditionalValue] = useState([]);
+
+    //last thing to do is just add this value to the total, then that will automatically update everything I think
+    const handleChange = input => {
+        let items = additionalValue;
+        items[input[0]] = input[1];
+        setAdditionalValue(items)
+    }
+
+    useEffect(()=>{
+        //just need to loop through additional values, add together and add to total 
+    })
 
     useEffect(() => {
         setTotal(value1);
         console.log("Total: ", total)
     },[value1])
 
+
     useEffect(() => {
         handleDataChange(total);
-        console.log(Q2 + ": ",value1);
     },[total])
+
 
     return (
         <InputDiv>
@@ -63,5 +86,7 @@ export default function InputComponent({Q1, Q1O1, Q1O2, Q2,handleDataChange}){
                 <label for="Q2">{Q2} #1</label><br/>
                 <input onChange={event => setValue1(parseInt(event.target.value))} type="text" id="Q2" name="Q2"/><br/>
             </div>
+            {Array(additionalComponents).fill(additionalComponents).map((comp, i) => <Star Q2={Q2} i={i} handleChange={handleChange} additionalComponents={additionalComponents} setAdditionalComponents={setAdditionalComponents}/>)}
+            <button onClick={() => setAdditionalComponents(additionalComponents+1)} className={activeInput? "": "hide"} type="button">Add {Q2}</button>
         </InputDiv>
     )}
